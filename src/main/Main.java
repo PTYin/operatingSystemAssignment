@@ -29,7 +29,7 @@ public class Main extends Application
     private double time = 0;  // millis
     private double epsilon = 1;
     @Override
-    public void start(Stage primaryStage) throws Exception
+    public void start(Stage primaryStage)
     {
 //        String str = Prompt.prompt();
         str = "hello, world";
@@ -280,6 +280,19 @@ public class Main extends Application
                     0.2, 0.5);
         }));
         fade("in", 1000, component.devParameter);
+        fade("in", 1000, component.arrowDict.get("value").getValue());
         fade("in", 1000, component.devHigh, component.devLow);
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            component.devHigh.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
+                    "-fx-background-color: indianred;" +
+                    "-fx-border-color: black;" +
+                    "-fx-text-fill: black");
+        }));
+        fade("in", 1000, component.arrowDict.get("according").getValue());
+        fade("out", 1000, component.arrowDict.get("according").getValue(), component.crw_table);
+
+        // ----------------------Step 7----------------------
+
     }
 }

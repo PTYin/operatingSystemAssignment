@@ -29,6 +29,7 @@ public class Component
     public Label rwParameter, devParameter, bufParameter, countParameter, posParameter;
     public Label devHigh, devLow;
     public ImageView crw_table;
+    public Label minorParameter;
     public TreeMap<String, Pair<Label, Arrow>> arrowDict;
     public Component(String str)
     {
@@ -133,8 +134,8 @@ public class Component
 
         // ----------------------Step 6----------------------
         crw_table = new ImageView("images/crw_table.png");
-        crw_table.setFitWidth(600);
-        crw_table.setFitHeight(200);
+        crw_table.setFitWidth(660);
+        crw_table.setFitHeight(220);
 
         devHigh = new Label("0x40");
         devHigh.setAlignment(Pos.CENTER);
@@ -148,6 +149,13 @@ public class Component
                 "-fx-background-color: white;" +
                 "-fx-border-color: black;" +
                 "-fx-text-fill: black");
+
+        // ----------------------Step 7----------------------
+        minorParameter = new Label("minor");
+        minorParameter.setAlignment(Pos.CENTER);
+        minorParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
+                "-fx-background-radius: 10; -fx-background-color: lightgray;" +
+                " -fx-text-fill: black;");
     }
     public Pair<Label, Arrow> makeArrow(ObservableValue<Number> startXProperty, ObservableValue<Number> startYProperty,
                                        ObservableValue<Number> endXProperty, ObservableValue<Number> endYProperty, @Nullable String name, @Nullable Double strokeWidth)

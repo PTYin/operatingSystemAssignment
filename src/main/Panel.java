@@ -45,7 +45,7 @@ public class Panel extends BorderPane
 
     public void setStep(int i)
     {
-        step.setText("step: " + String.valueOf(i));
+        step.setText("step: " + i);
     }
 
     public Panel()
@@ -272,10 +272,17 @@ public class Panel extends BorderPane
         component.posParameter.setOpacity(0);
         setXY(component.posParameter, new SimpleDoubleProperty(0), component.posParameter.heightProperty(), 0., 0.63);
 
-        // ----------------------Step 5----------------------
+        // ----------------------Step 6----------------------
         center.getChildren().add(component.crw_table);
         component.crw_table.setOpacity(0);
         setXY(component.crw_table, component.crw_table.fitWidthProperty(), component.crw_table.fitHeightProperty(), 0.5, 0.25);
+
+
+        addArrow(component, center.widthProperty().multiply(0.2).add(component.devParameter.widthProperty().divide(2)),
+                center.heightProperty().multiply(0.5),
+                center.widthProperty().multiply(0.7).subtract(component.devHigh.widthProperty().divide(2)),
+                center.heightProperty().multiply(0.5),
+                "value", 3.);
 
         center.getChildren().add(component.devHigh);
         component.devHigh.setOpacity(0);
@@ -284,5 +291,16 @@ public class Panel extends BorderPane
         component.devLow.setOpacity(0);
         component.devLow.layoutXProperty().bind(component.devHigh.layoutXProperty().add(component.devHigh.widthProperty()));
         component.devLow.layoutYProperty().bind(component.devHigh.layoutYProperty());
+
+        addArrow(component, center.widthProperty().multiply(0.7),
+                center.heightProperty().multiply(0.5).subtract(component.devHigh.heightProperty().divide(2)),
+                center.widthProperty().multiply(0.5).subtract(component.crw_table.fitWidthProperty().multiply(0.28)),
+                center.heightProperty().multiply(0.25).add(component.crw_table.fitHeightProperty().multiply(0.09)),
+                "according", 3.);
+
+        // ----------------------Step 6----------------------
+        center.getChildren().add(component.minorParameter);
+        component.minorParameter.setOpacity(0);
+        setXY(component.minorParameter, new SimpleDoubleProperty(0), component.bufParameter.heightProperty(), 0., 0.8);
     }
 }
