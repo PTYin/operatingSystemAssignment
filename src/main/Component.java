@@ -30,6 +30,10 @@ public class Component
     public Label devHigh, devLow;
     public ImageView crw_table;
     public Label minorParameter;
+    public Label rwValue;
+    public ImageView tty_table;
+    public Label channel0, channel1, channel2;
+
     public TreeMap<String, Pair<Label, Arrow>> arrowDict;
     public Component(String str)
     {
@@ -156,6 +160,35 @@ public class Component
         minorParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
                 "-fx-background-radius: 10; -fx-background-color: lightgray;" +
                 " -fx-text-fill: black;");
+
+        // ----------------------Step 8----------------------
+        rwValue = new Label("WRITE");
+        rwValue.setAlignment(Pos.CENTER);
+        rwValue.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
+                "-fx-background-color: white;" +
+                "-fx-border-color: black;" +
+                "-fx-text-fill: black");
+
+        // ----------------------Step 9----------------------
+        tty_table = new ImageView("images/tty_table.png");
+        tty_table.setFitWidth(300);
+        tty_table.setFitHeight(200);
+
+        channel0 = new Label("0");
+        channel0.setAlignment(Pos.CENTER);
+        channel0.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                "-fx-border-radius: 10;" +
+                "-fx-border-color: black" );
+        channel1 = new Label("1");
+        channel1.setAlignment(Pos.CENTER);
+        channel1.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                "-fx-border-radius: 10;" +
+                "-fx-border-color: black");
+        channel2 = new Label("2");
+        channel2.setAlignment(Pos.CENTER);
+        channel2.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                "-fx-border-radius: 10;" +
+                "-fx-border-color: black");
     }
     public Pair<Label, Arrow> makeArrow(ObservableValue<Number> startXProperty, ObservableValue<Number> startYProperty,
                                        ObservableValue<Number> endXProperty, ObservableValue<Number> endYProperty, @Nullable String name, @Nullable Double strokeWidth)

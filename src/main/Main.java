@@ -1,5 +1,6 @@
 package main;
 
+import Shape.Arrow;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -7,6 +8,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -28,6 +30,8 @@ public class Main extends Application
 
     private double time = 0;  // millis
     private double epsilon = 1;
+
+    public int head, tail;
     @Override
     public void start(Stage primaryStage)
     {
@@ -271,28 +275,191 @@ public class Main extends Application
             panel.popVariable();
             panel.pushVariable("dev", "1024");
             panel.descriptionText.setText("  根据传入的设备号的高八位（即主设备号）和crw_table规定的主设备号对应的设备读写操作函数进行调用，主设备号为4，调用rw_ttyx");
-            panel.setStep(5);
+            panel.setStep(6);
         }));
-        fade("in", 1000, component.crw_table);
-        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-        {
-            panel.setXY(component.devParameter, component.devParameter.widthProperty(), component.devParameter.heightProperty(),
-                    0.2, 0.5);
-        }));
-        fade("in", 1000, component.devParameter);
-        fade("in", 1000, component.arrowDict.get("value").getValue());
-        fade("in", 1000, component.devHigh, component.devLow);
-        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-        {
-            component.devHigh.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
-                    "-fx-background-color: indianred;" +
-                    "-fx-border-color: black;" +
-                    "-fx-text-fill: black");
-        }));
-        fade("in", 1000, component.arrowDict.get("according").getValue());
-        fade("out", 1000, component.arrowDict.get("according").getValue(), component.crw_table);
+//        fade("in", 1000, component.crw_table);
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            panel.setXY(component.devParameter, component.devParameter.widthProperty(), component.devParameter.heightProperty(),
+//                    0.2, 0.5);
+//        }));
+//        fade("in", 1000, component.devParameter);
+//        fade("in", 1000, component.arrowDict.get("value").getValue());
+//        fade("in", 1000, component.devHigh, component.devLow);
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            component.devHigh.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
+//                    "-fx-background-color: indianred;" +
+//                    "-fx-border-color: black;" +
+//                    "-fx-text-fill: black");
+//        }));
+//        fade("in", 1000, component.arrowDict.get("according").getValue());
+//        fade("out", 1000, component.arrowDict.get("according").getValue(), component.crw_table);
 
         // ----------------------Step 7----------------------
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            panel.title.setText("int rw_ttyx(int rw, unsigned minor, char *buf, int count, off_t *pos)");
+            panel.popVariable();
+            panel.pushVariable("rw", "WRITE");
+            panel.pushVariable("minor", "0");
+            panel.pushVariable("buf", str);
+            panel.pushVariable("count", String.valueOf(str.length()));
+            panel.descriptionText.setText("  次设备号为0，将其作为参数传入rw_ttyx，同时也将用户缓冲区和读写字节数传入");
+            panel.setStep(7);
+        }));
 
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            panel.setXY(component.rwParameter, new SimpleDoubleProperty(0), component.rwParameter.heightProperty(), 0., 0.8);
+//            panel.setXY(component.minorParameter, new SimpleDoubleProperty(0), component.minorParameter.heightProperty(), 0., 0.8);
+//            panel.setXY(component.bufParameter, new SimpleDoubleProperty(0), component.bufParameter.heightProperty(), 0., 0.8);
+//            panel.setXY(component.countParameter, new SimpleDoubleProperty(0), component.countParameter.heightProperty(), 0., 0.8);
+//            panel.setXY(component.posParameter, new SimpleDoubleProperty(0), component.posParameter.heightProperty(), 0., 0.8);
+//            component.devHigh.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
+//                    "-fx-background-color: transparent;" +
+//                    "-fx-border-color: black;" +
+//                    "-fx-text-fill: black");
+//
+//        }));
+//
+//        fade("in", 1000, component.arrowDict.get("rw_ttyx").getKey(), component.arrowDict.get("rw_ttyx").getValue());
+//
+//        fade("in", 100, component.posParameter);
+//        translate(1000, 0.7, 0.8, component.posParameter);
+////        fade("out", 100, component.posParameter);
+//
+//        fade("in", 100, component.countParameter);
+//        translate(1000, component.posParameter.layoutXProperty().subtract(component.countParameter.widthProperty()),
+//                panel.center.heightProperty().multiply(0.8).subtract(component.countParameter.heightProperty().divide(2)),
+//                component.countParameter);
+////        fade("out", 100, component.countParameter);
+//
+//        fade("in", 100, component.bufParameter);
+//        translate(1000, component.countParameter.layoutXProperty().subtract(component.bufParameter.widthProperty()),
+//                panel.center.heightProperty().multiply(0.8).subtract(component.bufParameter.heightProperty().divide(2)),
+//                component.bufParameter);
+////        fade("out", 100, component.bufParameter);
+//
+//        fade("in", 100, component.minorParameter);
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            component.devLow.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
+//                    "-fx-background-color: indianred;" +
+//                    "-fx-border-color: black;" +
+//                    "-fx-text-fill: black");
+//        }));
+//        fade("in", 1000, component.arrowDict.get("minor").getValue());
+//        translate(1000, component.bufParameter.layoutXProperty().subtract(component.minorParameter.widthProperty()),
+//                panel.center.heightProperty().multiply(0.8).subtract(component.minorParameter.heightProperty().divide(2)),
+//                component.minorParameter);
+////        fade("out", 100, component.minorParameter, component.arrowDict.get("minor").getValue());
+//
+//        fade("in", 100, component.rwParameter);
+//        translate(1000, component.minorParameter.layoutXProperty().subtract(component.rwParameter.widthProperty()),
+//                panel.center.heightProperty().multiply(0.8).subtract(component.rwParameter.heightProperty().divide(2)),
+//                component.rwParameter);
+////        fade("out", 100, component.rwParameter);
+//        fade("out", 1000, component.arrowDict.get("value").getValue(), component.arrowDict.get("minor").getValue(),
+//                component.devHigh, component.devLow, component.devParameter,
+//                component.arrowDict.get("rw_ttyx").getKey(), component.arrowDict.get("rw_ttyx").getValue(),
+//                component.posParameter);
+
+        // ----------------------Step 8----------------------
+
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            panel.title.setText("int tty_write(unsigned channel, char *buf, int nr)");
+            panel.popVariable();
+            panel.popVariable();
+            panel.popVariable();
+            panel.popVariable();
+            panel.pushVariable("channel", "0");
+            panel.pushVariable("buf", str);
+            panel.pushVariable("nr", String.valueOf(str.length()));
+            panel.descriptionText.setText("  rw_ttyx根据传入的参数rw判断是读还是写，rw为WRITE，调用tty_write，将次设备号，用户缓冲区指针，读写字节数传入");
+            panel.setStep(8);
+        }));
+
+//        time += 1000;
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            component.minorParameter.setText("channel");
+//            component.countParameter.setText("nr");
+//        }));
+//        translate(1000, 0.25, 0.25, component.rwParameter);
+//
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            component.arrowDict.get("rw_ttyx").getValue().startXProperty().bind(panel.center.widthProperty().multiply(0.75));
+//            component.arrowDict.get("rw_ttyx").getValue().startYProperty().bind(panel.center.heightProperty().multiply(0.1));
+//            component.arrowDict.get("rw_ttyx").getValue().endXProperty().bind(panel.center.widthProperty().multiply(0.75));
+//            component.arrowDict.get("rw_ttyx").getValue().endYProperty().bind(panel.center.heightProperty().multiply(0.5));
+//        }));
+//        fade("in", 1000, component.arrowDict.get("rw_ttyx").getKey(), component.arrowDict.get("rw_ttyx").getValue());
+//        fade("in", 1000, component.rwValue);
+//        fade("in", 1000, component.arrowDict.get("rw").getValue());
+//        fade("in", 1000, component.arrowDict.get("para").getValue());
+//        fade("in", 1000, component.arrowDict.get("tty_write").getKey(), component.arrowDict.get("tty_write").getValue());
+//        translate(500, 0.75, 0.7, component.countParameter);
+//        fade("out", 100, component.countParameter);
+//        translate(500, 0.75, 0.7, component.bufParameter);
+//        fade("out", 100, component.bufParameter);
+//        translate(500, 0.75, 0.7, component.minorParameter);
+//        fade("out", 100, component.minorParameter);
+//        fade("out", 1000, component.rwParameter, component.arrowDict.get("rw").getValue(), component.rwValue, component.arrowDict.get("para").getValue(),
+//                component.arrowDict.get("rw_ttyx").getKey(), component.arrowDict.get("rw_ttyx").getValue(),
+//                component.arrowDict.get("tty_write").getKey(), component.arrowDict.get("tty_write").getValue());
+
+        // ----------------------Step 9----------------------
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            panel.title.setText("int tty_write(unsigned channel, char *buf, int nr)");
+            panel.popVariable();
+            panel.popVariable();
+            panel.popVariable();
+            panel.pushVariable("channel", "0");
+            panel.descriptionText.setText("  tty_write首先判断传入的次设备号是否合法（即为0，1，2其中一个）,根据次设备号，选择对应预先定义的tty_table中的项来进行初始化数据，次设备号是0，那么将输入的CR（\\r）转换为NL（\\n），将输出的NL（\\n）转换为CRNL（\\r\\n）并设置一些其它标志，如控制模式标志，本地模式标志等");
+            panel.setStep(9);
+        }));
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            panel.setXY(component.minorParameter, component.minorParameter.widthProperty(), component.minorParameter.heightProperty(), 0.1, 0.5);
+        }));
+        fade("in", 1000, component.minorParameter);
+        fade("in", 1000, component.channel0, component.channel1, component.channel2);
+        fade("in", 1000, component.arrowDict.get("channel").getKey(), component.arrowDict.get("channel").getValue());
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            component.channel0.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                    "-fx-background-radius: 10;  -fx-background-color: lightgreen;" +
+                    "-fx-border-color: black; -fx-border-radius: 10;");
+        }));
+        fade("in", 1000, component.arrowDict.get("tty_table").getKey(), component.arrowDict.get("tty_table").getValue());
+        fade("in", 1000, component.tty_table);
+
+        fade("out", 1000, component.minorParameter,
+                component.channel0, component.channel1, component.channel2,
+                component.arrowDict.get("channel").getKey(), component.arrowDict.get("channel").getValue(),
+                component.arrowDict.get("tty_table").getKey(), component.arrowDict.get("tty_table").getValue(),
+                component.tty_table);
+
+        // ----------------------Step 10----------------------
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            head = 0;
+            tail = 0;
+            panel.title.setText("tty->write_q\n");
+            panel.popVariable();
+            panel.pushVariable("fs", "23");
+            panel.pushVariable("buf", str);
+            panel.pushVariable("tail", String.valueOf(tail));
+            panel.pushVariable("head", String.valueOf(head));
+            panel.descriptionText.setText("  进入循环\n" +
+                    "  先判断tty->write_q即tty写队列是否已满，刚开始图中所示是空，即是否大于TTY_BUF_SIZE(1024)，若满则进入可中断的睡眠状态，如果当前进程有信号要处理则退出循环体\n" +
+                    "  因为用户缓冲区存在于用户数据空间，故需要用get_fs_byte将用户数据空间之间的数据复制到内核数据空间，该函数将[fs:addr]的一个字符返回\n" +
+                    "  \n");
+            panel.setStep(10);
+        }));
     }
 }

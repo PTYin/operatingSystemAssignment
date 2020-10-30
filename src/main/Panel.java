@@ -193,7 +193,7 @@ public class Panel extends BorderPane
         addArrow(component, center.widthProperty().divide(2),
                 center.heightProperty().multiply(0.25),
                 center.widthProperty().divide(2),
-                center.heightProperty().multiply(0.5),
+                center.heightProperty().multiply(0.5).subtract(component.systemCall.heightProperty().divide(2)),
                 "movl $4, %eax\n" +
                         "int 0x80", null);
         // system_call
@@ -203,23 +203,24 @@ public class Panel extends BorderPane
         // movl $0x17, %edx
         //   mov %dx, %fs
         addArrow(component, center.widthProperty().divide(2),
-                center.heightProperty().multiply(0.5),
+                center.heightProperty().multiply(0.5).add(component.systemCall.heightProperty().divide(2)),
                 center.widthProperty().divide(2),
-                center.heightProperty().multiply(0.75),
+                component.terminal.layoutYProperty(),
                 "movl $0x17, %edx\n" +
                         "mov %dx, %fs", null);
         // /dev/tty0
         center.getChildren().add(component.terminal);
         component.terminal.setOpacity(0);
         setXY(component.terminal, ((ImageView)component.terminal.getChildren().get(0)).fitWidthProperty(),
-                ((ImageView)component.terminal.getChildren().get(0)).fitHeightProperty(), 0.5, 0.75);
+                ((ImageView)component.terminal.getChildren().get(0)).fitHeightProperty().add(
+                        ((Label)component.terminal.getChildren().get(1)).heightProperty()), 0.5, 0.75);
         // write
         addArrow(component, center.widthProperty().divide(2),
                 center.heightProperty().multiply(0.25).add(component.process.heightProperty().divide(2)),
                 center.widthProperty().divide(2),
-                component.terminal.layoutYProperty().subtract(5),
-                "write", 50.);
-        component.arrowDict.get("write").getKey().setTextFill(Paint.valueOf("white"));
+                component.terminal.layoutYProperty(),
+                "write", 3.);
+//        component.arrowDict.get("write").getKey().setTextFill(Paint.valueOf("white"));
 
         // ----------------------Step 4----------------------
         center.getChildren().add(component.pipeFile);
@@ -298,9 +299,72 @@ public class Panel extends BorderPane
                 center.heightProperty().multiply(0.25).add(component.crw_table.fitHeightProperty().multiply(0.09)),
                 "according", 3.);
 
-        // ----------------------Step 6----------------------
+        // ----------------------Step 7----------------------
         center.getChildren().add(component.minorParameter);
         component.minorParameter.setOpacity(0);
         setXY(component.minorParameter, new SimpleDoubleProperty(0), component.bufParameter.heightProperty(), 0., 0.8);
+
+        addArrow(component, center.widthProperty().multiply(0.8),
+                center.heightProperty().multiply(0.7),
+                center.widthProperty().multiply(0.8),
+                center.heightProperty().multiply(0.9),
+                "rw_ttyx", 3.);
+
+
+        addArrow(component, component.devLow.layoutXProperty().add(component.devLow.widthProperty().divide(2)),
+                component.devLow.layoutYProperty().add(component.devLow.heightProperty()),
+                component.minorParameter.layoutXProperty().add(component.minorParameter.widthProperty().divide(2)),
+                component.minorParameter.layoutYProperty(),
+                "minor", 1.);
+
+        // ----------------------Step 8----------------------
+
+        addArrow(component, component.rwParameter.layoutXProperty().add(component.rwParameter.widthProperty()),
+                component.rwParameter.layoutYProperty().add(component.rwParameter.heightProperty().divide(2)),
+                component.rwValue.layoutXProperty(),
+                component.rwValue.layoutYProperty().add(component.rwValue.heightProperty().divide(2)),
+                "rw", 1.);
+        center.getChildren().add(component.rwValue);
+        component.rwValue.setOpacity(0);
+        setXY(component.rwValue, component.rwValue.widthProperty(), component.rwValue.heightProperty(), 0.5, 0.25);
+
+        addArrow(component, component.rwValue.layoutXProperty().add(component.rwValue.widthProperty()),
+                component.rwValue.layoutYProperty().add(component.rwValue.heightProperty().divide(2)),
+                center.widthProperty().multiply(0.75),
+                center.heightProperty().multiply(0.25),
+                "para", 1.);
+        addArrow(component, center.widthProperty().multiply(0.75),
+                center.heightProperty().multiply(0.5),
+                center.widthProperty().multiply(0.75),
+                center.heightProperty().multiply(0.9),
+                "tty_write", 3.);
+
+        // ----------------------Step 9----------------------
+        center.getChildren().add(component.channel0);
+        component.channel0.setOpacity(0);
+        setXY(component.channel0, component.channel0.widthProperty(), component.channel0.heightProperty(), 0.4, 0.25);
+        center.getChildren().add(component.channel1);
+        component.channel1.setOpacity(0);
+        setXY(component.channel1, component.channel1.widthProperty(), component.channel1.heightProperty(), 0.4, 0.5);
+        center.getChildren().add(component.channel2);
+        component.channel2.setOpacity(0);
+        setXY(component.channel2, component.channel2.widthProperty(), component.channel2.heightProperty(), 0.4, 0.75);
+
+        addArrow(component, component.minorParameter.layoutXProperty().add(component.minorParameter.widthProperty()),
+                component.minorParameter.layoutYProperty().add(component.minorParameter.heightProperty().divide(2)),
+                component.channel0.layoutXProperty(),
+                component.channel0.layoutYProperty().add(component.channel0.heightProperty().divide(2)),
+                "channel", 1.);
+
+        addArrow(component, component.channel0.layoutXProperty().add(component.channel0.widthProperty()),
+                component.channel0.layoutYProperty().add(component.channel0.heightProperty().divide(2)),
+                component.tty_table.layoutXProperty(),
+                component.tty_table.layoutYProperty().add(component.tty_table.fitHeightProperty().divide(2)),
+                "tty_table", 1.);
+
+        center.getChildren().add(component.tty_table);
+        component.tty_table.setOpacity(0);
+        setXY(component.tty_table, component.tty_table.fitWidthProperty(), component.tty_table.fitHeightProperty(), 0.8, 0.25);
+
     }
 }
