@@ -1,6 +1,7 @@
 package main;
 
 import Shape.Arrow;
+import Shape.Queue;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -8,6 +9,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -29,9 +31,8 @@ public class Main extends Application
     private String str;
 
     private double time = 0;  // millis
-    private double epsilon = 1;
+    private final double epsilon = 1;
 
-    public int head, tail;
     @Override
     public void start(Stage primaryStage)
     {
@@ -426,40 +427,116 @@ public class Main extends Application
         {
             panel.setXY(component.minorParameter, component.minorParameter.widthProperty(), component.minorParameter.heightProperty(), 0.1, 0.5);
         }));
-        fade("in", 1000, component.minorParameter);
-        fade("in", 1000, component.channel0, component.channel1, component.channel2);
-        fade("in", 1000, component.arrowDict.get("channel").getKey(), component.arrowDict.get("channel").getValue());
-        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-        {
-            component.channel0.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
-                    "-fx-background-radius: 10;  -fx-background-color: lightgreen;" +
-                    "-fx-border-color: black; -fx-border-radius: 10;");
-        }));
-        fade("in", 1000, component.arrowDict.get("tty_table").getKey(), component.arrowDict.get("tty_table").getValue());
-        fade("in", 1000, component.tty_table);
-
-        fade("out", 1000, component.minorParameter,
-                component.channel0, component.channel1, component.channel2,
-                component.arrowDict.get("channel").getKey(), component.arrowDict.get("channel").getValue(),
-                component.arrowDict.get("tty_table").getKey(), component.arrowDict.get("tty_table").getValue(),
-                component.tty_table);
+//        fade("in", 1000, component.minorParameter);
+//        fade("in", 1000, component.channel0, component.channel1, component.channel2);
+//        fade("in", 1000, component.arrowDict.get("channel").getKey(), component.arrowDict.get("channel").getValue());
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            component.channel0.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+//                    "-fx-background-radius: 10;  -fx-background-color: lightgreen;" +
+//                    "-fx-border-color: black; -fx-border-radius: 10;");
+//        }));
+//        fade("in", 1000, component.arrowDict.get("tty_table").getKey(), component.arrowDict.get("tty_table").getValue());
+//        fade("in", 1000, component.tty_table);
+//
+//        fade("out", 1000, component.minorParameter,
+//                component.channel0, component.channel1, component.channel2,
+//                component.arrowDict.get("channel").getKey(), component.arrowDict.get("channel").getValue(),
+//                component.arrowDict.get("tty_table").getKey(), component.arrowDict.get("tty_table").getValue(),
+//                component.tty_table);
 
         // ----------------------Step 10----------------------
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
-            head = 0;
-            tail = 0;
-            panel.title.setText("tty->write_q\n");
+            panel.title.setText("tty->write_q");
             panel.popVariable();
             panel.pushVariable("fs", "23");
             panel.pushVariable("buf", str);
-            panel.pushVariable("tail", String.valueOf(tail));
-            panel.pushVariable("head", String.valueOf(head));
             panel.descriptionText.setText("  进入循环\n" +
                     "  先判断tty->write_q即tty写队列是否已满，刚开始图中所示是空，即是否大于TTY_BUF_SIZE(1024)，若满则进入可中断的睡眠状态，如果当前进程有信号要处理则退出循环体\n" +
-                    "  因为用户缓冲区存在于用户数据空间，故需要用get_fs_byte将用户数据空间之间的数据复制到内核数据空间，该函数将[fs:addr]的一个字符返回\n" +
-                    "  \n");
+                    "  因为用户缓冲区存在于用户数据空间，故需要用get_fs_byte将用户数据空间之间的数据复制到内核数据空间，该函数将[fs:addr]的一个字符返回\n");
             panel.setStep(10);
         }));
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            panel.setXY(component.bufParameter, component.bufParameter.widthProperty(), component.bufParameter.heightProperty(), 0.1, 0.1);
+        }));
+        fade("in", 1000, component.ttyQueue);
+
+        fade("in", 1000, component.bufParameter);
+        fade("in", 1000, component.bufQueue);
+        fade("in", 1000, component.arrowDict.get("buf").getValue());
+        fade("in", 1000, component.arrowDict.get("get_fs_byte").getKey(), component.arrowDict.get("get_fs_byte").getValue());
+        fade("in", 1000, component.currentValue);
+        fade("in", 1000, component.arrowDict.get("push").getValue());
+
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            component.ttyQueue.push(char2HexStr(str.charAt(0)));
+        }));
+        time += 1000;
+
+        for(int i=1;i<str.length();i++)
+        {
+            int finalI = i;
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+                ReadOnlyDoubleProperty bufQueueSize = ((Label) component.bufQueue.getChildren().get(0)).widthProperty();
+                component.arrowDict.get("get_fs_byte").getValue().startXProperty().bind(
+                        component.bufQueue.layoutXProperty().add(bufQueueSize.multiply(finalI+0.5)));
+            }));
+            time += 500;
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+                component.currentValue.setText("'"+str.charAt(finalI)+"'");
+            }));
+            time += 500;
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+                component.arrowDict.get("push").getValue().endXProperty().bind(component.ttyQueue.layoutXProperty().add((finalI+0.5)*Queue.SIZE));
+            }));
+            time += 500;
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+                component.ttyQueue.push(char2HexStr(str.charAt(finalI)));
+            }));
+            time += 1000;
+        }
+
+        fade("out", 1000, component.bufParameter, component.bufQueue,
+                component.arrowDict.get("buf").getValue(),
+                component.arrowDict.get("get_fs_byte").getKey(), component.arrowDict.get("get_fs_byte").getValue(),
+                component.currentValue,
+                component.arrowDict.get("push").getValue());
+
+        // ----------------------Step 11----------------------
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            panel.title.setText("void con_write(struct tty_struct *tty)");
+            panel.popVariable();
+            panel.popVariable();
+            panel.pushVariable("state", "0");
+            panel.descriptionText.setText("  con_write依次获取tty写队列中的字符，将tail指针+1，若tail指针在循环队列在内存的最后一个元素则回到循环队列第一个元素\n" +
+                    "  判断state（0/1/2/3/4）,再给根据字符进行不同的处理");
+            panel.setStep(11);
+        }));
+
+        fade("in", 1000, component.states);
+        fade("in", 1000, component.virtualConsole);
+    }
+
+
+    public static String char2HexStr(char c)
+    {
+        char[] chars = "0123456789ABCDEF".toCharArray();
+        StringBuilder sb = new StringBuilder("");
+        int bit;
+        sb.append("0x");
+        bit = (c & 0x0f0) >> 4;
+        sb.append(chars[bit]);
+        bit = c & 0x0f;
+        sb.append(chars[bit]);
+        sb.append(" ");
+        return sb.toString().trim();
     }
 }

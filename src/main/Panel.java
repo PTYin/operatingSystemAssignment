@@ -1,6 +1,7 @@
 package main;
 
 import Shape.Arrow;
+import Shape.Queue;
 import com.sun.istack.internal.Nullable;
 import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.DoubleProperty;
@@ -366,5 +367,48 @@ public class Panel extends BorderPane
         component.tty_table.setOpacity(0);
         setXY(component.tty_table, component.tty_table.fitWidthProperty(), component.tty_table.fitHeightProperty(), 0.8, 0.25);
 
+        // ----------------------Step 10----------------------
+        center.getChildren().add(component.ttyQueue);
+        component.ttyQueue.setOpacity(0);
+        setXY(component.ttyQueue, component.ttyQueue.getQueue().widthProperty(), component.ttyQueue.getQueue().heightProperty().add(100), 0.5, 0.9);
+
+        center.getChildren().add(component.bufQueue);
+        component.bufQueue.setOpacity(0);
+        setXY(component.bufQueue, component.bufQueue.widthProperty(), component.bufQueue.heightProperty(), 0.5, 0.1);
+
+        ReadOnlyDoubleProperty bufQueueSize = ((Label) component.bufQueue.getChildren().get(0)).widthProperty();
+
+        addArrow(component, component.bufParameter.layoutXProperty().add(component.bufParameter.widthProperty()),
+                component.bufParameter.layoutYProperty().add(component.bufParameter.heightProperty().divide(2)),
+                component.bufQueue.layoutXProperty(),
+                component.bufQueue.layoutYProperty().add(bufQueueSize.divide(2)),
+                "buf", 1.);
+
+        center.getChildren().addAll(component.currentValue);
+        component.currentValue.setOpacity(0);
+        setXY(component.currentValue, component.currentValue.widthProperty(), component.currentValue.heightProperty(), 0.5, 0.5);
+
+        addArrow(component, component.bufQueue.layoutXProperty().add(bufQueueSize.multiply(0+0.5)),
+                component.bufQueue.layoutYProperty().add(bufQueueSize),
+                component.currentValue.layoutXProperty().add(component.currentValue.widthProperty().divide(2)),
+                component.currentValue.layoutYProperty(),
+                "get_fs_byte", 3.);
+
+        addArrow(component, component.currentValue.layoutXProperty().add(component.currentValue.widthProperty().divide(2)),
+                component.currentValue.layoutYProperty().add(component.currentValue.heightProperty()),
+                component.ttyQueue.layoutXProperty().add((0+0.5)*Queue.SIZE),
+                component.ttyQueue.layoutYProperty().add(50),
+                "push", 1.);
+
+        // ----------------------Step 9----------------------
+        center.getChildren().add(component.states);
+        component.states.setOpacity(0);
+        setXY(component.states, component.states.widthProperty(), component.states.heightProperty(), 0.5, 0.1);
+
+        center.getChildren().add(component.virtualConsole);
+        component.virtualConsole.setOpacity(0);
+        component.virtualConsole.prefWidthProperty().bind(center.widthProperty());
+        component.virtualConsole.prefHeightProperty().bind(center.heightProperty().divide(2));
+        setXY(component.virtualConsole, component.virtualConsole.widthProperty(), component.virtualConsole.heightProperty(), 0.5, 0.5);
     }
 }

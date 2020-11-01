@@ -1,6 +1,8 @@
 package main;
 
 import Shape.Arrow;
+import Shape.Queue;
+import Shape.State;
 import com.sun.istack.internal.Nullable;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
@@ -9,6 +11,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -33,6 +37,13 @@ public class Component
     public Label rwValue;
     public ImageView tty_table;
     public Label channel0, channel1, channel2;
+
+    public HBox bufQueue;
+    public Queue ttyQueue;
+    public Label currentValue;
+
+    public State states;
+    VirtualConsole virtualConsole;
 
     public TreeMap<String, Pair<Label, Arrow>> arrowDict;
     public Component(String str)
@@ -189,6 +200,29 @@ public class Component
         channel2.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-border-radius: 10;" +
                 "-fx-border-color: black");
+
+        // ----------------------Step 10----------------------
+        bufQueue = new HBox();
+        for(char c: str.toCharArray())
+        {
+            Label temp = new Label(String.valueOf(c));
+            temp.setStyle("-fx-pref-width: 50; -fx-pref-height:50;" +
+                    "-fx-border-color: black");
+            temp.setAlignment(Pos.CENTER);
+            bufQueue.getChildren().add(temp);
+        }
+
+        ttyQueue = new Queue(str.length());
+
+        currentValue = new Label("'"+ str.charAt(0)+"'");
+        currentValue.setAlignment(Pos.CENTER);
+        currentValue.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                "-fx-border-radius: 10;" +
+                "-fx-border-color: black");
+
+        // ----------------------Step 11----------------------
+        states = new State();
+        virtualConsole = new VirtualConsole();
     }
     public Pair<Label, Arrow> makeArrow(ObservableValue<Number> startXProperty, ObservableValue<Number> startYProperty,
                                        ObservableValue<Number> endXProperty, ObservableValue<Number> endYProperty, @Nullable String name, @Nullable Double strokeWidth)
