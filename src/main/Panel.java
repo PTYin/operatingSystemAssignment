@@ -19,6 +19,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.util.Pair;
 
+import java.util.HashMap;
+
 public class Panel extends BorderPane
 {
     public Pane center, top, right, bottom, left;
@@ -26,12 +28,14 @@ public class Panel extends BorderPane
     public Label descriptionText;
     public Label step;
     private VBox variableStack;
+    public HashMap<String, Label> variables;
     public int size=0;
 
     public void pushVariable(String identifier, String value)
     {
         Label text = new Label(identifier + ": " + value);
         text.setFont(Font.font(12));
+        variables.put(identifier, text);
         variableStack.getChildren().add(text);
         size++;
     }
@@ -39,6 +43,7 @@ public class Panel extends BorderPane
     public String popVariable()
     {
         Label label = (Label)(variableStack.getChildren().get(variableStack.getChildren().size()-1));
+        variables.remove(label.getText().substring(0, label.getText().indexOf(':')));
         variableStack.getChildren().remove(label);
         size--;
         return label.getText();
@@ -108,6 +113,7 @@ public class Panel extends BorderPane
         leftTitle.prefWidthProperty().bind(left.widthProperty());
         leftTitle.setFont(Font.font(18));
 
+        variables = new HashMap<>();
         variableStack = new VBox();
         variableStack.layoutYProperty().bind(leftTitle.heightProperty());
         variableStack.prefWidthProperty().bind(left.widthProperty());

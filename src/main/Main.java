@@ -1,32 +1,22 @@
 package main;
 
-import Shape.Arrow;
-import Shape.Queue;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleExpression;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Line;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.util.Pair;
 
 public class Main extends Application
 {
     private Panel panel;
     private Timeline mainThread;
+    private boolean playing;
     private Component component;
     private VirtualConsole virtualConsole;
     private String str;
@@ -38,10 +28,10 @@ public class Main extends Application
     public void start(Stage primaryStage)
     {
 //        String str = Prompt.prompt();
-        str = "hello, world";
+        str = "\033[7mwor\033[2Kld";
         component = new Component(str);
         panel = new Panel();
-        virtualConsole = new VirtualConsole(panel);
+        virtualConsole = new VirtualConsole();
 
 //        console.prefWidthProperty().bind(panel.center.widthProperty());
 //        console.prefHeightProperty().bind(panel.center.heightProperty().divide(2));
@@ -58,7 +48,19 @@ public class Main extends Application
 
         constructTimeline();
         mainThread.play();
+        playing = true;
         Scene scene = new Scene(panel, 1600, 900);
+        scene.setOnKeyPressed(event ->
+        {
+            if(event.getCode().equals(KeyCode.SPACE))
+            {
+                if(playing)
+                    mainThread.pause();
+                else
+                    mainThread.play();
+                playing = !playing;
+            }
+        });
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setMinWidth(1300);
@@ -464,57 +466,57 @@ public class Main extends Application
                     "  因为用户缓冲区存在于用户数据空间，故需要用get_fs_byte将用户数据空间之间的数据复制到内核数据空间，该函数将[fs:addr]的一个字符返回\n");
             panel.setStep(10);
         }));
-        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-        {
-            panel.setXY(component.bufParameter, component.bufParameter.widthProperty(), component.bufParameter.heightProperty(), 0.1, 0.1);
-        }));
-        fade("in", 1000, component.ttyQueue);
-
-        fade("in", 1000, component.bufParameter);
-        fade("in", 1000, component.bufQueue);
-        fade("in", 1000, component.arrowDict.get("buf").getValue());
-        fade("in", 1000, component.arrowDict.get("get_fs_byte").getKey(), component.arrowDict.get("get_fs_byte").getValue());
-        fade("in", 1000, component.currentValue);
-        fade("in", 1000, component.arrowDict.get("push").getValue());
-
-        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-        {
-            component.ttyQueue.push(char2HexStr(str.charAt(0)));
-        }));
-        time += 1000;
-
-        for(int i=1;i<str.length();i++)
-        {
-            int finalI = i;
-            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-            {
-                ReadOnlyDoubleProperty bufQueueSize = ((Label) component.bufQueue.getChildren().get(0)).widthProperty();
-                component.arrowDict.get("get_fs_byte").getValue().startXProperty().bind(
-                        component.bufQueue.layoutXProperty().add(bufQueueSize.multiply(finalI+0.5)));
-            }));
-            time += 500;
-            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-            {
-                component.currentValue.setText("'"+str.charAt(finalI)+"'");
-            }));
-            time += 500;
-            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-            {
-                component.arrowDict.get("push").getValue().endXProperty().bind(component.ttyQueue.layoutXProperty().add((finalI+0.5)*Queue.SIZE));
-            }));
-            time += 500;
-            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-            {
-                component.ttyQueue.push(char2HexStr(str.charAt(finalI)));
-            }));
-            time += 1000;
-        }
-
-        fade("out", 1000, component.bufParameter, component.bufQueue,
-                component.arrowDict.get("buf").getValue(),
-                component.arrowDict.get("get_fs_byte").getKey(), component.arrowDict.get("get_fs_byte").getValue(),
-                component.currentValue,
-                component.arrowDict.get("push").getValue());
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            panel.setXY(component.bufParameter, component.bufParameter.widthProperty(), component.bufParameter.heightProperty(), 0.1, 0.1);
+//        }));
+//        fade("in", 1000, component.ttyQueue);
+//
+//        fade("in", 1000, component.bufParameter);
+//        fade("in", 1000, component.bufQueue);
+//        fade("in", 1000, component.arrowDict.get("buf").getValue());
+//        fade("in", 1000, component.arrowDict.get("get_fs_byte").getKey(), component.arrowDict.get("get_fs_byte").getValue());
+//        fade("in", 1000, component.currentValue);
+//        fade("in", 1000, component.arrowDict.get("push").getValue());
+//
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            component.ttyQueue.push(char2HexStr(str.charAt(0)));
+//        }));
+//        time += 1000;
+//
+//        for(int i=1;i<str.length();i++)
+//        {
+//            int finalI = i;
+//            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//            {
+//                ReadOnlyDoubleProperty bufQueueSize = ((Label) component.bufQueue.getChildren().get(0)).widthProperty();
+//                component.arrowDict.get("get_fs_byte").getValue().startXProperty().bind(
+//                        component.bufQueue.layoutXProperty().add(bufQueueSize.multiply(finalI+0.5)));
+//            }));
+//            time += 500;
+//            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//            {
+//                component.currentValue.setText("'"+str.charAt(finalI)+"'");
+//            }));
+//            time += 500;
+//            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//            {
+//                component.arrowDict.get("push").getValue().endXProperty().bind(component.ttyQueue.layoutXProperty().add((finalI+0.5)*Queue.SIZE));
+//            }));
+//            time += 500;
+//            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//            {
+//                component.ttyQueue.push(char2HexStr(str.charAt(finalI)));
+//            }));
+//            time += 1000;
+//        }
+//
+//        fade("out", 1000, component.bufParameter, component.bufQueue,
+//                component.arrowDict.get("buf").getValue(),
+//                component.arrowDict.get("get_fs_byte").getKey(), component.arrowDict.get("get_fs_byte").getValue(),
+//                component.currentValue,
+//                component.arrowDict.get("push").getValue());
 
         // ----------------------Step 11----------------------
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
@@ -522,7 +524,8 @@ public class Main extends Application
             panel.title.setText("void con_write(struct tty_struct *tty)");
             panel.popVariable();
             panel.popVariable();
-            panel.pushVariable("state", "0");
+            panel.pushVariable("x", "0");
+            panel.pushVariable("y", "0");
             panel.descriptionText.setText("  con_write依次获取tty写队列中的字符，将tail指针+1，若tail指针在循环队列在内存的最后一个元素则回到循环队列第一个元素\n" +
                     "  判断state（0/1/2/3/4）,再给根据字符进行不同的处理");
             panel.setStep(11);
@@ -530,15 +533,14 @@ public class Main extends Application
 
         fade("in", 1000, component.states);
         fade("in", 1000, virtualConsole);
-        for(char c: str.toCharArray())
+        VirtualConsole test = new VirtualConsole();
+        for(int i=0;i<str.length();i++)
         {
+            char c = str.charAt(i);
+            test.process(c);  // pre process to construct timeline
             mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
             {
-//                component.virtualConsole.process(c);
-            }));
-            time += 1000;
-            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-            {
+                String description = virtualConsole.process(c);
                 for(Label state: component.states.states)
                 {
                     state.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
@@ -549,8 +551,15 @@ public class Main extends Application
                         "-fx-border-radius: 50; -fx-border-color: black;" +
                         "-fx-background-radius:50; -fx-background-color: lightgreen;" +
                         "-fx-font-size: 25");
-
+                panel.descriptionText.setText(description);
+                panel.variables.get("x").setText("x: "+virtualConsole.x);
+                panel.variables.get("y").setText("y: "+virtualConsole.y);
             }));
+            time += 2000;
+            if(test.repeat)
+            {
+                i--;
+            }
         }
     }
 
