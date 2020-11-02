@@ -20,6 +20,7 @@ public class VirtualConsole extends GridPane
     private String currentStyle = originStyle;
     private String withCursorStyle = currentStyle + "-fx-background-color: indianred;";
     private FadeTransition cursorBlink;
+
     public boolean repeat = false;
     public int count = 0;
 

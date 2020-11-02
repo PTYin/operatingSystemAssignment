@@ -78,7 +78,7 @@ public class Queue extends VBox
     public void pop()
     {
         ((Label)queue.getChildren().get(tail.get())).setText("...");
-        tail.set(tail.get()-1);
+        tail.set(tail.get()+1);
     }
 
     public HBox getQueue()

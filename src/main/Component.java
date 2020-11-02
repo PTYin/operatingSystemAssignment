@@ -19,12 +19,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 
 public class Component
 {
-    private String str;
+    private String str, cooked;
+    private ArrayList<String> dict;
     public Label sourceCode;
     public ImageView operatingSystem;
     public Group file, terminal;
@@ -45,16 +47,22 @@ public class Component
     public State states;
 
     public TreeMap<String, Pair<Label, Arrow>> arrowDict;
-    public Component(String str)
+
+
+
+    public Component(String str, String cooked, ArrayList<String> dict)
     {
         this.str = str;
+        this.cooked = cooked;
+        this.dict = dict;
+
         arrowDict = new TreeMap<>();
 
         sourceCode = new Label(
                 "#include<stdio.h>\n" +
                 "int main()\n" +
                 "{\n" +
-                "   printf(\""+str+"\")\n" +
+                "   printf(\""+cooked+"\")\n" +
                 "   return 0;\n" +
                 "}\n");
         sourceCode.setStyle("-fx-font-size: 30; -fx-border-width: 2; -fx-border-color: black; -fx-padding: 50");
@@ -202,9 +210,9 @@ public class Component
 
         // ----------------------Step 10----------------------
         bufQueue = new HBox();
-        for(char c: str.toCharArray())
+        for(int i=0;i<str.length();i++)
         {
-            Label temp = new Label(String.valueOf(c));
+            Label temp = new Label(dict.get(i));
             temp.setStyle("-fx-pref-width: 50; -fx-pref-height:50;" +
                     "-fx-border-color: black");
             temp.setAlignment(Pos.CENTER);
@@ -213,7 +221,7 @@ public class Component
 
         ttyQueue = new Queue(str.length());
 
-        currentValue = new Label("'"+ str.charAt(0)+"'");
+        currentValue = new Label("'"+ dict.get(0) +"'");
         currentValue.setAlignment(Pos.CENTER);
         currentValue.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-border-radius: 10;" +
