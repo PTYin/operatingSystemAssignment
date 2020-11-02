@@ -1,6 +1,9 @@
 package main;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -9,6 +12,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VirtualConsole extends GridPane
@@ -36,7 +40,10 @@ public class VirtualConsole extends GridPane
     private int nr;
     private int saved_x, saved_y;
 
-    public VirtualConsole()
+    private final Panel panel;
+    public ArrayList<KeyFrame> keyFrames;
+
+    public VirtualConsole(Panel panel)
     {
         super();
         this.setStyle("-fx-background-color: black");
@@ -58,6 +65,8 @@ public class VirtualConsole extends GridPane
                 this.add(text, j, i);
             }
 
+        keyFrames = new ArrayList<>();
+        this.panel = panel;
     }
 
     private void modifyStyle(String style)
@@ -93,12 +102,12 @@ public class VirtualConsole extends GridPane
     {
         if (i < nr)
         {
-            process(buffer[i]);
+            process(buffer[i], i*1000);
             i++;
         }
     }
 
-    public void process(char c)
+    public void process(char c, double time)
     {
         delCursor();
         switch (state)

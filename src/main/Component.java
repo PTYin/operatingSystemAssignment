@@ -43,7 +43,6 @@ public class Component
     public Label currentValue;
 
     public State states;
-    VirtualConsole virtualConsole;
 
     public TreeMap<String, Pair<Label, Arrow>> arrowDict;
     public Component(String str)
@@ -222,7 +221,6 @@ public class Component
 
         // ----------------------Step 11----------------------
         states = new State();
-        virtualConsole = new VirtualConsole();
     }
     public Pair<Label, Arrow> makeArrow(ObservableValue<Number> startXProperty, ObservableValue<Number> startYProperty,
                                        ObservableValue<Number> endXProperty, ObservableValue<Number> endYProperty, @Nullable String name, @Nullable Double strokeWidth)

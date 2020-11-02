@@ -400,15 +400,10 @@ public class Panel extends BorderPane
                 component.ttyQueue.layoutYProperty().add(50),
                 "push", 1.);
 
-        // ----------------------Step 9----------------------
+        // ----------------------Step 11----------------------
         center.getChildren().add(component.states);
         component.states.setOpacity(0);
         setXY(component.states, component.states.widthProperty(), component.states.heightProperty(), 0.5, 0.1);
 
-        center.getChildren().add(component.virtualConsole);
-        component.virtualConsole.setOpacity(0);
-        component.virtualConsole.prefWidthProperty().bind(center.widthProperty());
-        component.virtualConsole.prefHeightProperty().bind(center.heightProperty().divide(2));
-        setXY(component.virtualConsole, component.virtualConsole.widthProperty(), component.virtualConsole.heightProperty(), 0.5, 0.5);
     }
 }

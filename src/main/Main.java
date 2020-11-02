@@ -28,6 +28,7 @@ public class Main extends Application
     private Panel panel;
     private Timeline mainThread;
     private Component component;
+    private VirtualConsole virtualConsole;
     private String str;
 
     private double time = 0;  // millis
@@ -40,8 +41,8 @@ public class Main extends Application
         str = "hello, world";
         component = new Component(str);
         panel = new Panel();
+        virtualConsole = new VirtualConsole(panel);
 
-//        VirtualConsole console = new VirtualConsole();
 //        console.prefWidthProperty().bind(panel.center.widthProperty());
 //        console.prefHeightProperty().bind(panel.center.heightProperty().divide(2));
 //        panel.center.getChildren().add(console);
@@ -49,6 +50,12 @@ public class Main extends Application
 //        String str = "hello, \033[7mwor\033[2Kld";
 //        console.process(str);
         panel.addObject(component);
+        panel.center.getChildren().add(virtualConsole);
+        virtualConsole.setOpacity(0);
+        virtualConsole.prefWidthProperty().bind(panel.center.widthProperty());
+        virtualConsole.prefHeightProperty().bind(panel.center.heightProperty().divide(2));
+        panel.setXY(virtualConsole, virtualConsole.widthProperty(), virtualConsole.heightProperty(), 0.5, 0.5);
+
         constructTimeline();
         mainThread.play();
         Scene scene = new Scene(panel, 1600, 900);
@@ -149,7 +156,7 @@ public class Main extends Application
             panel.descriptionText.setText("  fork系统调用创建进程，以供可执行文件执行，execve系统调用加载二进制文件\n");
             panel.setStep(2);
         }));
-//
+
 //        fade("in", 1000, component.operatingSystem);
 //        fade("in", 1000, component.arrowDict.get("fork").getKey(), component.arrowDict.get("fork").getValue());
 //        fade("in", 1000, component.process);
@@ -423,10 +430,10 @@ public class Main extends Application
             panel.descriptionText.setText("  tty_write首先判断传入的次设备号是否合法（即为0，1，2其中一个）,根据次设备号，选择对应预先定义的tty_table中的项来进行初始化数据，次设备号是0，那么将输入的CR（\\r）转换为NL（\\n），将输出的NL（\\n）转换为CRNL（\\r\\n）并设置一些其它标志，如控制模式标志，本地模式标志等");
             panel.setStep(9);
         }));
-        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
-        {
-            panel.setXY(component.minorParameter, component.minorParameter.widthProperty(), component.minorParameter.heightProperty(), 0.1, 0.5);
-        }));
+//        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+//        {
+//            panel.setXY(component.minorParameter, component.minorParameter.widthProperty(), component.minorParameter.heightProperty(), 0.1, 0.5);
+//        }));
 //        fade("in", 1000, component.minorParameter);
 //        fade("in", 1000, component.channel0, component.channel1, component.channel2);
 //        fade("in", 1000, component.arrowDict.get("channel").getKey(), component.arrowDict.get("channel").getValue());
@@ -522,7 +529,29 @@ public class Main extends Application
         }));
 
         fade("in", 1000, component.states);
-        fade("in", 1000, component.virtualConsole);
+        fade("in", 1000, virtualConsole);
+        for(char c: str.toCharArray())
+        {
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+//                component.virtualConsole.process(c);
+            }));
+            time += 1000;
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+                for(Label state: component.states.states)
+                {
+                    state.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                            "-fx-border-radius: 50; -fx-border-color: black;" +
+                            "-fx-font-size: 25");
+                }
+                component.states.states.get(virtualConsole.state).setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                        "-fx-border-radius: 50; -fx-border-color: black;" +
+                        "-fx-background-radius:50; -fx-background-color: lightgreen;" +
+                        "-fx-font-size: 25");
+
+            }));
+        }
     }
 
 
