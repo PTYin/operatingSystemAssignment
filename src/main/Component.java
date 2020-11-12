@@ -159,16 +159,16 @@ public class Component
         crw_table.setFitWidth(660);
         crw_table.setFitHeight(220);
 
-        devHigh = new Label("0x40");
+        devHigh = new Label("0x04");
         devHigh.setAlignment(Pos.CENTER);
         devHigh.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
-                "-fx-background-color: white;" +
+                "-fx-background-color: transparent;" +
                 "-fx-border-color: black;" +
                 "-fx-text-fill: black");
         devLow = new Label("0x00");
         devLow.setAlignment(Pos.CENTER);
         devLow.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
-                "-fx-background-color: white;" +
+                "-fx-background-color: transparent;" +
                 "-fx-border-color: black;" +
                 "-fx-text-fill: black");
 
@@ -183,7 +183,7 @@ public class Component
         rwValue = new Label("WRITE");
         rwValue.setAlignment(Pos.CENTER);
         rwValue.setStyle("-fx-pref-width: 100; -fx-pref-height: 100;" +
-                "-fx-background-color: white;" +
+                "-fx-background-color: transparent;" +
                 "-fx-border-color: black;" +
                 "-fx-text-fill: black");
 

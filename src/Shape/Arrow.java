@@ -18,7 +18,7 @@ public class Arrow extends Line
         circle.radiusProperty().bind(this.strokeWidthProperty().multiply(2.));
         circle.centerXProperty().bind(endXProperty());
         circle.centerYProperty().bind(endYProperty());
-        circle.opacityProperty().bind(this.opacityProperty());
+        circle.opacityProperty().bindBidirectional(this.opacityProperty());
     }
     public void addToContainer(ObservableList<Node> childrenList)
     {

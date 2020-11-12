@@ -9,14 +9,22 @@ import javafx.application.Application;
 import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main extends Application
@@ -29,26 +37,21 @@ public class Main extends Application
     private String str, cooked;
     private ArrayList<String> dict;
 
-    private double time = 0;  // millis
+    private double time;  // millis
+    private int step;
+    private ArrayList<Double> cuePoints;
     private final double epsilon = 1;
 
-    @Override
-    public void start(Stage primaryStage)
+    private Scene scene;
+
+    private void configure(Stage stage)
     {
-//        String str = Prompt.prompt();
-        str = "\033[7mwor\033[2Kld";
         dict = new ArrayList<>();
         cooked = cook(str, dict);
         component = new Component(str, cooked, dict);
         panel = new Panel();
         virtualConsole = new VirtualConsole();
 
-//        console.prefWidthProperty().bind(panel.center.widthProperty());
-//        console.prefHeightProperty().bind(panel.center.heightProperty().divide(2));
-//        panel.center.getChildren().add(console);
-//        // test
-//        String str = "hello, \033[7mwor\033[2Kld";
-//        console.process(str);
         panel.addObject(component);
         panel.center.getChildren().add(virtualConsole);
         virtualConsole.setOpacity(0);
@@ -56,10 +59,9 @@ public class Main extends Application
         virtualConsole.prefHeightProperty().bind(panel.center.heightProperty().divide(2));
         panel.setXY(virtualConsole, virtualConsole.widthProperty(), virtualConsole.heightProperty(), 0.5, 0.5);
 
-        constructTimeline();
-        mainThread.play();
         playing = true;
-        Scene scene = new Scene(panel, 1600, 900);
+        scene = new Scene(panel, 1600, 900);
+        scene.setFill(null);
         scene.setOnKeyPressed(event ->
         {
             if(event.getCode().equals(KeyCode.SPACE))
@@ -69,13 +71,47 @@ public class Main extends Application
                 else
                     mainThread.play();
                 playing = !playing;
+
+//                File file = new File("./panel.png");
+//                WritableImage image = panel.snapshot(new SnapshotParameters(),null);
+//                try
+//                {
+//                    ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+//                }catch (IOException ignored){}
             }
+            else if (event.getCode().equals(KeyCode.ENTER))
+            {
+                mainThread.stop();
+                str = Prompt.testMode();
+                configure(stage);
+                for (Node node: panel.center.getChildren())
+                    try
+                    {
+                        node.setOpacity(0);
+                    } catch (Exception ignored){}
+                constructTestThread();
+                mainThread.play();
+            }
+            else if (event.getCode().equals(KeyCode.F11))
+                stage.setFullScreen(!stage.isFullScreen());
         });
-        Stage stage = new Stage();
+        stage.setScene(scene);
+    }
+
+    @Override
+    public void start(Stage stage)
+    {
+//        str = Prompt.prompt();
+        str = "\033[7mwor\033[2Kld";
+        configure(stage);
+//        stage.initStyle(StageStyle.TRANSPARENT);
         stage.setScene(scene);
         stage.setMinWidth(1300);
         stage.setTitle("The Process of Outputting String");
         stage.show();
+
+        constructMainThread();
+        mainThread.play();
     }
 
     private void fade(String flag, double duration, Node... nodes)
@@ -141,11 +177,15 @@ public class Main extends Application
                 node);
     }
 
-    private void constructTimeline()
+    private void constructMainThread()
     {
+        time = 0;
+        step = 0;
         mainThread = new Timeline();
-        time += 10;
+        cuePoints = new ArrayList<>();
         // ----------------------Step 1----------------------
+        step = 1;
+        cuePoints.add(time);
         panel.title.setText("./example.c");
         panel.descriptionText.setText("  这里是要执行输出字符串的源代码，经编译链接生成可执行文件./example\n");
         panel.setStep(1);
@@ -160,8 +200,10 @@ public class Main extends Application
         fade("out", 1000, component.sourceCode);
 
         // ----------------------Step 2----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 2;
             panel.title.setText("fork & execve");
             panel.pushVariable("pid", "4");
             panel.pushVariable("filename", "./example");
@@ -179,8 +221,10 @@ public class Main extends Application
         fade("out", 1000, component.operatingSystem, component.file, component.arrowDict.get("execve").getKey(), component.arrowDict.get("execve").getValue());
 
         // ----------------------Step 3----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 3;
             panel.title.setText("write");
             panel.popVariable();
             panel.popVariable();
@@ -208,8 +252,10 @@ public class Main extends Application
         fade("out", 1000, component.process, component.arrowDict.get("write").getKey(), component.arrowDict.get("write").getValue());
 
         // ----------------------Step 4----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 4;
             panel.title.setText("sys_write(unsigned int fd, char * buf, int count)");
             panel.popVariable();
             panel.popVariable();
@@ -236,8 +282,10 @@ public class Main extends Application
                 component.arrowDict.get("is").getKey(), component.arrowDict.get("is").getValue());
 
         // ----------------------Step 5----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 5;
             panel.title.setText("int rw_char(int rw, int dev, char *buf, int count, off_t *pos)");
             panel.popVariable();
             panel.popVariable();
@@ -286,8 +334,10 @@ public class Main extends Application
                 component.arrowDict.get("rw_char").getKey(), component.arrowDict.get("rw_char").getValue());
 
         // ----------------------Step 6----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 6;
             panel.title.setText("int rw_char(int rw, int dev, char *buf, int count, off_t *pos)");
             panel.popVariable();
             panel.popVariable();
@@ -317,8 +367,10 @@ public class Main extends Application
         fade("out", 1000, component.arrowDict.get("according").getValue(), component.crw_table);
 
         // ----------------------Step 7----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 7;
             panel.title.setText("int rw_ttyx(int rw, unsigned minor, char *buf, int count, off_t *pos)");
             panel.popVariable();
             panel.pushVariable("rw", "WRITE");
@@ -386,9 +438,10 @@ public class Main extends Application
                 component.posParameter);
 
         // ----------------------Step 8----------------------
-
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 8;
             panel.title.setText("int tty_write(unsigned channel, char *buf, int nr)");
             panel.popVariable();
             panel.popVariable();
@@ -432,8 +485,10 @@ public class Main extends Application
                 component.arrowDict.get("tty_write").getKey(), component.arrowDict.get("tty_write").getValue());
 
         // ----------------------Step 9----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 9;
             panel.title.setText("int tty_write(unsigned channel, char *buf, int nr)");
             panel.popVariable();
             panel.popVariable();
@@ -465,8 +520,10 @@ public class Main extends Application
                 component.tty_table);
 
         // ----------------------Step 10----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 10;
             panel.title.setText("tty->write_q");
             panel.popVariable();
             panel.pushVariable("fs", "23");
@@ -529,8 +586,10 @@ public class Main extends Application
                 component.arrowDict.get("push").getValue());
 
         // ----------------------Step 11----------------------
+        cuePoints.add(time);
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
+            step = 11;
             panel.title.setText("void con_write(struct tty_struct *tty)");
             panel.popVariable();
             panel.popVariable();
@@ -541,6 +600,65 @@ public class Main extends Application
             panel.setStep(11);
         }));
 
+        fade("in", 1000, component.states);
+        fade("in", 1000, virtualConsole);
+        VirtualConsole test = new VirtualConsole();
+        for(int i=0;i<str.length();i++)
+        {
+            char c = str.charAt(i);
+            test.process(c);  // pre process to construct timeline
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+                String description = virtualConsole.process(c);
+                for(Label state: component.states.states)
+                {
+                    state.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                            "-fx-border-radius: 50; -fx-border-color: black;" +
+                            "-fx-font-size: 25");
+                }
+                component.states.states.get(virtualConsole.state).setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
+                        "-fx-border-radius: 50; -fx-border-color: black;" +
+                        "-fx-background-radius:50; -fx-background-color: lightgreen;" +
+                        "-fx-font-size: 25");
+                panel.descriptionText.setText(description);
+                panel.variables.get("x").setText("x: "+virtualConsole.x);
+                panel.variables.get("y").setText("y: "+virtualConsole.y);
+            }));
+            time += 2000;
+            mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+            {
+                if(!virtualConsole.repeat)
+                    component.ttyQueue.pop();
+            }));
+            time += 1000;
+            if(test.repeat)
+            {
+                i--;
+            }
+        }
+    }
+
+    private void constructTestThread()
+    {
+        time = 0;
+        mainThread = new Timeline();
+        for(int i=0;i<str.length();i++)
+        {
+            component.ttyQueue.push(char2HexStr(str.charAt(i)));
+        }
+
+        mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
+        {
+            step = 11;
+            panel.title.setText("void con_write(struct tty_struct *tty)");
+            panel.pushVariable("x", "0");
+            panel.pushVariable("y", "0");
+            panel.descriptionText.setText("  con_write依次获取tty写队列中的字符，将tail指针+1，若tail指针在循环队列在内存的最后一个元素则回到循环队列第一个元素\n" +
+                    "  判断state（0/1/2/3/4）,再给根据字符进行不同的处理");
+            panel.setStep(11);
+        }));
+
+        fade("in", 1000, component.ttyQueue);
         fade("in", 1000, component.states);
         fade("in", 1000, virtualConsole);
         VirtualConsole test = new VirtualConsole();
@@ -596,7 +714,7 @@ public class Main extends Application
 
     public static String cook(String str, @Nullable ArrayList<String> map)
     {
-        char[] chars = "0123456789ABCDEF".toCharArray();
+        char[] chars = "01234567".toCharArray();
         StringBuilder sb = new StringBuilder();
         byte[] bs = str.getBytes();
         int bit;

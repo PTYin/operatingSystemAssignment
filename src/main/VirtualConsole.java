@@ -478,10 +478,10 @@ public class VirtualConsole extends GridPane
                     modifyStyle(originStyle);
                     break;
                 case 1:
-                    modifyStyle(currentStyle + "-fx-font: bold;");
+                    modifyStyle(currentStyle + "-fx-font-weight: bold;");
                     break;
                 case 4:
-                    modifyStyle(currentStyle + "-fx-font-style: italic;");
+                    modifyStyle(currentStyle + "-fx-underline: true;");
                     break;
                 case 7:
                     modifyStyle(currentStyle + "-fx-text-fill: black; -fx-background-color: white;");

@@ -9,6 +9,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -34,7 +35,8 @@ public class Panel extends BorderPane
     public void pushVariable(String identifier, String value)
     {
         Label text = new Label(identifier + ": " + value);
-        text.setFont(Font.font(12));
+        text.setStyle("-fx-font-size: 15;");
+        text.setWrapText(true);
         variables.put(identifier, text);
         variableStack.getChildren().add(text);
         size++;
@@ -71,31 +73,51 @@ public class Panel extends BorderPane
 
         center.prefWidthProperty().bind(this.widthProperty().multiply(3).divide(5));
         center.prefHeightProperty().bind((this.heightProperty().subtract(bottom.heightProperty())).multiply(6).divide(7));
-        center.setStyle("-fx-background-color: white");
+        center.setStyle("-fx-background-color: rgba(250,235,215,0.95);" +
+                "-fx-background-radius: 100;" +
+                "-fx-background-insets: 0 20 0 20");
 
         top.prefHeightProperty().bind((this.heightProperty().subtract(bottom.heightProperty())).multiply(1).divide(7));
-        top.setStyle("-fx-border-color: transparent transparent black transparent;" +
-                "-fx-background-image: url('images/background.png');" +
-                "-fx-background-repeat: repeat");
+//        top.setStyle("-fx-border-color: transparent transparent black transparent;" +
+//                "-fx-background-image: url('images/background.png');" +
+//                "-fx-background-repeat: repeat;");
+        top.setStyle("-fx-background-color: linear-gradient(to bottom,rgba(192,252,179,0.5),#cfff9c);" +
+                "-fx-background-radius: 1000 1000 1000 1000;" +
+                "-fx-background-insets: 20 0 20 0");
+
 
         right.prefWidthProperty().bind(this.widthProperty().divide(5));
-        right.setStyle("-fx-border-color: transparent transparent transparent black;" +
-                "-fx-background-image: url('images/background.png');" +
-                "-fx-background-repeat: repeat");
+//        right.setStyle("-fx-border-color: transparent transparent transparent black;" +
+//                "-fx-background-image: url('images/background.png');" +
+//                "-fx-background-repeat: repeat;");
+
+        right.setStyle("-fx-background-color: linear-gradient(to left,rgba(105,255,220,0.6),rgba(105,255,190,0.8));" +
+                "-fx-background-radius: 1000 1000 1000 1000;" +
+                "-fx-background-insets: 0 0 50 0");
 
         bottom.setPrefHeight(20);
-        bottom.setStyle("-fx-border-color: black transparent transparent transparent");
+        bottom.setStyle("-fx-background-color: antiquewhite;" +
+                "-fx-background-radius: 0 0 1000 1000;" +
+                "-fx-background-insets: 0 500 0 500");
 
         left.prefWidthProperty().bind(this.widthProperty().divide(5));
-        left.setStyle("-fx-border-color: transparent black transparent transparent;" +
-                "-fx-background-image: url('images/background.png');" +
-                "-fx-background-repeat: repeat");
+//        left.setStyle("-fx-border-color: transparent black transparent transparent;" +
+//                "-fx-background-image: url('images/background.png');" +
+//                "-fx-background-repeat: repeat");
+        left.setStyle("-fx-background-color: linear-gradient(to right,rgba(248,248,74,0.8),rgba(255,255,139,0.8));" +
+                "-fx-background-radius: 1000 1000 1000 1000;" +
+                "-fx-background-insets: 100 0 100 0");
 
         this.setCenter(center);
         this.setTop(top);
         this.setRight(right);
         this.setBottom(bottom);
         this.setLeft(left);
+        this.setStyle("-fx-background-color: transparent");
+        this.setStyle("-fx-background-image: url('images/background.png');" +
+                "-fx-background-repeat: no-repeat;" +
+                "-fx-background-position: center;" +
+                "-fx-background-size: cover");
     }
 
     private void placeComponents()
@@ -104,38 +126,46 @@ public class Panel extends BorderPane
         title = new Label();
         top.getChildren().add(title);
         title.layoutXProperty().bind((top.widthProperty().subtract(title.widthProperty())).divide(2));
+//        title.layoutXProperty().bind((top.widthProperty().multiply(0.1)));
         title.layoutYProperty().bind((top.heightProperty().subtract(title.heightProperty())).divide(2));
-        title.setFont(Font.font(18));
+        title.setStyle("-fx-font-family: 'Arial Black';-fx-font-size: 25;");
 
         leftTitle = new Label("Variables & Registers");
-        leftTitle.setFont(Font.font(15));
+        leftTitle.setStyle("-fx-background-color: linear-gradient(to right,rgba(248,248,74,0.8),rgba(255,255,139,0.8));" +
+                "-fx-background-radius: 1000 1000 1000 1000;" +
+                "-fx-font-family: 'Arial';-fx-font-size: 22;");
         leftTitle.setAlignment(Pos.CENTER);
+        leftTitle.layoutYProperty().bind(left.heightProperty().multiply(0.28));
         leftTitle.prefWidthProperty().bind(left.widthProperty());
-        leftTitle.setFont(Font.font(18));
+        leftTitle.prefHeightProperty().bind(left.heightProperty().multiply(0.1));
 
         variables = new HashMap<>();
         variableStack = new VBox();
-        variableStack.layoutYProperty().bind(leftTitle.heightProperty());
+        variableStack.layoutYProperty().bind((left.heightProperty().subtract(variableStack.heightProperty())).divide(2));
         variableStack.prefWidthProperty().bind(left.widthProperty());
-//        variableStack.setAlignment(Pos.CENTER);
+        variableStack.setAlignment(Pos.CENTER);
 
         left.getChildren().addAll(leftTitle, variableStack);
 
 
         rightTitle = new Label("Description");
-        rightTitle.setFont(Font.font(15));
+        rightTitle.setStyle("-fx-background-color: linear-gradient(to left,rgba(105,255,220,0.6),rgba(105,255,190,0.8));" +
+                "-fx-background-radius: 1000 1000 1000 1000;" +
+                "-fx-font-family: 'Arial';-fx-font-size: 22;");
         rightTitle.setAlignment(Pos.CENTER);
+        rightTitle.layoutYProperty().bind(left.heightProperty().multiply(0.16));
         rightTitle.prefWidthProperty().bind(right.widthProperty());
-        rightTitle.setFont(Font.font(18));
+        rightTitle.prefHeightProperty().bind(left.heightProperty().multiply(0.1));
 
         descriptionText = new Label();
-        descriptionText.layoutYProperty().bind((right.heightProperty().subtract(rightTitle.heightProperty()).subtract(descriptionText.heightProperty())).divide(2));
+        descriptionText.layoutYProperty().bind((right.heightProperty().subtract(descriptionText.heightProperty())).divide(2));
         descriptionText.maxWidthProperty().bind(right.widthProperty());
         descriptionText.setWrapText(true);
         descriptionText.setFont(Font.font(18));
         right.getChildren().addAll(rightTitle, descriptionText);
 
         step = new Label("step: ");
+        step.layoutXProperty().bind((bottom.widthProperty().subtract(step.widthProperty())).divide(2));
         bottom.getChildren().add(step);
     }
 
