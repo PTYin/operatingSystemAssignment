@@ -25,6 +25,7 @@ import java.util.HashMap;
 public class Panel extends BorderPane
 {
     public Pane center, top, right, bottom, left;
+    public ImageView leftDecoration, rightDecoration;
     public Label title, leftTitle, rightTitle;
     public Label descriptionText;
     public Label step;
@@ -35,7 +36,7 @@ public class Panel extends BorderPane
     public void pushVariable(String identifier, String value)
     {
         Label text = new Label(identifier + ": " + value);
-        text.setStyle("-fx-font-size: 15;");
+        text.setStyle("-fx-font-size: 20;");
         text.setWrapText(true);
         variables.put(identifier, text);
         variableStack.getChildren().add(text);
@@ -128,12 +129,12 @@ public class Panel extends BorderPane
         title.layoutXProperty().bind((top.widthProperty().subtract(title.widthProperty())).divide(2));
 //        title.layoutXProperty().bind((top.widthProperty().multiply(0.1)));
         title.layoutYProperty().bind((top.heightProperty().subtract(title.heightProperty())).divide(2));
-        title.setStyle("-fx-font-family: 'Arial Black';-fx-font-size: 25;");
+        title.setStyle("-fx-font-family: 'Segoe UI Black';-fx-font-size: 30;");
 
         leftTitle = new Label("Variables & Registers");
         leftTitle.setStyle("-fx-background-color: linear-gradient(to right,rgba(248,248,74,0.8),rgba(255,255,139,0.8));" +
                 "-fx-background-radius: 1000 1000 1000 1000;" +
-                "-fx-font-family: 'Arial';-fx-font-size: 22;");
+                "-fx-font-family: 'Kristen ITC';-fx-font-size: 25;");
         leftTitle.setAlignment(Pos.CENTER);
         leftTitle.layoutYProperty().bind(left.heightProperty().multiply(0.28));
         leftTitle.prefWidthProperty().bind(left.widthProperty());
@@ -145,13 +146,19 @@ public class Panel extends BorderPane
         variableStack.prefWidthProperty().bind(left.widthProperty());
         variableStack.setAlignment(Pos.CENTER);
 
-        left.getChildren().addAll(leftTitle, variableStack);
+        leftDecoration = new ImageView("images/octopus.gif");
+        leftDecoration.setFitWidth(300);
+        leftDecoration.setFitHeight(220);
+        leftDecoration.layoutXProperty().bind(left.widthProperty().subtract(leftDecoration.fitWidthProperty()).divide(2));
+        leftDecoration.layoutYProperty().bind(left.heightProperty().subtract(leftDecoration.fitHeightProperty().multiply(0.9)));
+
+        left.getChildren().addAll(leftTitle, variableStack, leftDecoration);
 
 
         rightTitle = new Label("Description");
         rightTitle.setStyle("-fx-background-color: linear-gradient(to left,rgba(105,255,220,0.6),rgba(105,255,190,0.8));" +
                 "-fx-background-radius: 1000 1000 1000 1000;" +
-                "-fx-font-family: 'Arial';-fx-font-size: 22;");
+                "-fx-font-family: 'Kristen ITC';-fx-font-size: 30;");
         rightTitle.setAlignment(Pos.CENTER);
         rightTitle.layoutYProperty().bind(left.heightProperty().multiply(0.16));
         rightTitle.prefWidthProperty().bind(right.widthProperty());
@@ -161,8 +168,14 @@ public class Panel extends BorderPane
         descriptionText.layoutYProperty().bind((right.heightProperty().subtract(descriptionText.heightProperty())).divide(2));
         descriptionText.maxWidthProperty().bind(right.widthProperty());
         descriptionText.setWrapText(true);
-        descriptionText.setFont(Font.font(18));
-        right.getChildren().addAll(rightTitle, descriptionText);
+        descriptionText.setFont(Font.font(24));
+
+        rightDecoration = new ImageView("images/pikachu.gif");
+        rightDecoration.setFitWidth(300);
+        rightDecoration.setFitHeight(200);
+        rightDecoration.layoutXProperty().bind(right.widthProperty().subtract(rightDecoration.fitWidthProperty()).divide(2));
+        rightDecoration.layoutYProperty().bind(right.heightProperty().subtract(rightDecoration.fitHeightProperty().multiply(0.9)));
+        right.getChildren().addAll(rightTitle, descriptionText, rightDecoration);
 
         step = new Label("step: ");
         step.layoutXProperty().bind((bottom.widthProperty().subtract(step.widthProperty())).divide(2));

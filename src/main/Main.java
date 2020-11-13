@@ -101,8 +101,8 @@ public class Main extends Application
     @Override
     public void start(Stage stage)
     {
-//        str = Prompt.prompt();
-        str = "\033[7mwor\033[2Kld";
+        str = Prompt.prompt();
+//        str = "\033[7mwor\033[2Kld";
         configure(stage);
 //        stage.initStyle(StageStyle.TRANSPARENT);
         stage.setScene(scene);
