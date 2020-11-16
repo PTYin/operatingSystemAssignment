@@ -274,7 +274,7 @@ public class Main extends Application
         mainThread.getKeyFrames().add(new KeyFrame(Duration.millis(time), event ->
         {
             component.charFile.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
-                    "-fx-background-radius: 10; -fx-background-color: lightgreen;" +
+                    "-fx-background-radius: 10; -fx-background-color: darkgreen;" +
                     " -fx-text-fill: white;");
         }));
         fade("in", 1000, component.arrowDict.get("is").getKey(), component.arrowDict.get("is").getValue());

@@ -36,7 +36,7 @@ public class Panel extends BorderPane
     public void pushVariable(String identifier, String value)
     {
         Label text = new Label(identifier + ": " + value);
-        text.setStyle("-fx-font-size: 20;");
+        text.setStyle("-fx-font-family: 'Comic Sans MS';-fx-font-size: 20;");
         text.setWrapText(true);
         variables.put(identifier, text);
         variableStack.getChildren().add(text);
@@ -170,12 +170,13 @@ public class Panel extends BorderPane
         descriptionText.setWrapText(true);
         descriptionText.setFont(Font.font(24));
 
-        rightDecoration = new ImageView("images/pikachu.gif");
-        rightDecoration.setFitWidth(300);
-        rightDecoration.setFitHeight(200);
-        rightDecoration.layoutXProperty().bind(right.widthProperty().subtract(rightDecoration.fitWidthProperty()).divide(2));
-        rightDecoration.layoutYProperty().bind(right.heightProperty().subtract(rightDecoration.fitHeightProperty().multiply(0.9)));
-        right.getChildren().addAll(rightTitle, descriptionText, rightDecoration);
+//        rightDecoration = new ImageView("images/pikachu.gif");
+//        rightDecoration.setFitWidth(300);
+//        rightDecoration.setFitHeight(200);
+//        rightDecoration.layoutXProperty().bind(right.widthProperty().subtract(rightDecoration.fitWidthProperty().multiply(0.9)).divide(2));
+//        rightDecoration.layoutYProperty().bind(right.heightProperty().subtract(rightDecoration.fitHeightProperty().multiply(0.9)));
+//        right.getChildren().addAll(rightTitle, descriptionText, rightDecoration);
+        right.getChildren().addAll(rightTitle, descriptionText);
 
         step = new Label("step: ");
         step.layoutXProperty().bind((bottom.widthProperty().subtract(step.widthProperty())).divide(2));

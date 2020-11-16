@@ -76,13 +76,15 @@ public class Component
         process.setAlignment(Pos.CENTER);
         process.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-background-radius: 30; -fx-background-color: black;" +
-                " -fx-text-fill: white;");
+                " -fx-text-fill: white;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
 
         ImageView fileImage = new ImageView("images/file.png");
 //        file.setPreserveRatio(true);
         fileImage.setFitWidth(100);
         fileImage.setFitHeight(100);
         Label fileLabel = new Label("./example");
+        fileLabel.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         fileLabel.layoutXProperty().bind(fileImage.layoutXProperty().add((fileImage.fitWidthProperty().subtract(fileLabel.widthProperty())).divide(2)));
         fileLabel.layoutYProperty().bind(fileImage.fitHeightProperty());
         fileLabel.setAlignment(Pos.CENTER);
@@ -91,15 +93,17 @@ public class Component
         // ----------------------Step 3----------------------
         systemCall = new Label("system_call");
         systemCall.setAlignment(Pos.CENTER);
-        systemCall.setStyle("-fx-pref-width: 100; -fx-pref-height:40;" +
+        systemCall.setStyle("-fx-pref-width: 200; -fx-pref-height:40;" +
                 "-fx-background-radius: 30; -fx-background-color: black;" +
-                " -fx-text-fill: white;");
+                " -fx-text-fill: white;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
 
         ImageView terminalImage = new ImageView("images/terminal.png");
 //        terminal.setPreserveRatio(true);
         terminalImage.setFitWidth(100);
         terminalImage.setFitHeight(100);
         Label terminalLabel = new Label("/dev/tty0");
+        terminalLabel.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         terminalLabel.layoutXProperty().bind(terminalImage.layoutXProperty().add((terminalImage.fitWidthProperty().subtract(terminalLabel.widthProperty())).divide(2)));
         terminalLabel.layoutYProperty().bind(terminalImage.fitHeightProperty());
         terminalLabel.setAlignment(Pos.CENTER);
@@ -110,49 +114,58 @@ public class Component
         pipeFile.setAlignment(Pos.CENTER);
         pipeFile.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-background-radius: 10; -fx-background-color: black;" +
-                " -fx-text-fill: white;");
+                " -fx-text-fill: white;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         charFile = new Label("Char");
         charFile.setAlignment(Pos.CENTER);
         charFile.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-background-radius: 10; -fx-background-color: black;" +
-                " -fx-text-fill: white;");
+                " -fx-text-fill: white;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         blockFile = new Label("Block");
         blockFile.setAlignment(Pos.CENTER);
         blockFile.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-background-radius: 10; -fx-background-color: black;" +
-                " -fx-text-fill: white;");
+                " -fx-text-fill: white;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         regularFile = new Label("Regular");
         regularFile.setAlignment(Pos.CENTER);
         regularFile.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-background-radius: 10; -fx-background-color: black;" +
-                " -fx-text-fill: white;");
+                " -fx-text-fill: white;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
 
         // ----------------------Step 5----------------------
         rwParameter = new Label("rw");
         rwParameter.setAlignment(Pos.CENTER);
         rwParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
                 "-fx-background-radius: 10; -fx-background-color: lightgray;" +
-                " -fx-text-fill: black;");
+                " -fx-text-fill: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         devParameter = new Label("dev");
         devParameter.setAlignment(Pos.CENTER);
         devParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
                 "-fx-background-radius: 10; -fx-background-color: lightgray;" +
-                " -fx-text-fill: black;");
+                " -fx-text-fill: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         bufParameter = new Label("buf");
         bufParameter.setAlignment(Pos.CENTER);
         bufParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
                 "-fx-background-radius: 10; -fx-background-color: lightgray;" +
-                " -fx-text-fill: black;");
+                " -fx-text-fill: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         countParameter = new Label("count");
         countParameter.setAlignment(Pos.CENTER);
         countParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
                 "-fx-background-radius: 10; -fx-background-color: lightgray;" +
-                " -fx-text-fill: black;");
+                " -fx-text-fill: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         posParameter = new Label("pos");
         posParameter.setAlignment(Pos.CENTER);
         posParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
                 "-fx-background-radius: 10; -fx-background-color: lightgray;" +
-                " -fx-text-fill: black;");
+                " -fx-text-fill: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
 
         // ----------------------Step 6----------------------
         crw_table = new ImageView("images/crw_table.png");
@@ -177,7 +190,8 @@ public class Component
         minorParameter.setAlignment(Pos.CENTER);
         minorParameter.setStyle("-fx-pref-width: 100; -fx-pref-height:50;" +
                 "-fx-background-radius: 10; -fx-background-color: lightgray;" +
-                " -fx-text-fill: black;");
+                " -fx-text-fill: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
 
         // ----------------------Step 8----------------------
         rwValue = new Label("WRITE");
@@ -196,17 +210,20 @@ public class Component
         channel0.setAlignment(Pos.CENTER);
         channel0.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-border-radius: 10;" +
-                "-fx-border-color: black" );
+                "-fx-border-color: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;" );
         channel1 = new Label("1");
         channel1.setAlignment(Pos.CENTER);
         channel1.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-border-radius: 10;" +
-                "-fx-border-color: black");
+                "-fx-border-color: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         channel2 = new Label("2");
         channel2.setAlignment(Pos.CENTER);
         channel2.setStyle("-fx-pref-width: 100; -fx-pref-height:100;" +
                 "-fx-border-radius: 10;" +
-                "-fx-border-color: black");
+                "-fx-border-color: black;" +
+                "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
 
         // ----------------------Step 10----------------------
         bufQueue = new HBox();
@@ -214,7 +231,8 @@ public class Component
         {
             Label temp = new Label(dict.get(i));
             temp.setStyle("-fx-pref-width: 50; -fx-pref-height:50;" +
-                    "-fx-border-color: black");
+                    "-fx-border-color: black;" +
+                    "-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
             temp.setAlignment(Pos.CENTER);
             bufQueue.getChildren().add(temp);
         }
@@ -244,7 +262,8 @@ public class Component
         {
             Label label = new Label(name);
             label.setAlignment(Pos.CENTER);
-            label.setStyle("-fx-text-alignment: center; -fx-text-fill: black;");
+            label.setStyle("-fx-text-alignment: center; -fx-text-fill: black; -fx-font-size: 20;" +
+                    "-fx-font-family: 'Comic Sans MS'");
             label.layoutXProperty().bind((arrow.startXProperty().add(arrow.endXProperty()).subtract(label.widthProperty())).divide(2));
             label.layoutYProperty().bind((arrow.startYProperty().add(arrow.endYProperty()).subtract(label.heightProperty())).divide(2));
             arrowDict.put(name, new Pair<>(label, arrow));
