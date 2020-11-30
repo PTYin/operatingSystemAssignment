@@ -1,0 +1,133 @@
+#These breakpoints will be enable before boot.
+
+# -----------------------Pre-defined Command-----------------------
+
+set $equal=0
+set $str="hello, world"
+
+define strcmp
+    set $i=0
+    while *$arg0[$i]==$arg1[$i] && $i < $arg2
+        set $i=$i+1
+    end
+    if $i==$arg2
+        set $equal=1
+    else
+        set $equal=0
+    end
+end
+
+
+# -----------------------Process-----------------------
+break system_call.s:210
+    comm
+        start_output
+            echo # -------------fork-------------\n
+            i r eax
+        stop_output
+    end
+
+break fork.c:copy_process
+    comm
+        start_output
+            echo # -------------copy_process-------------\n
+        stop_output
+    end
+
+break fs/exec.c:187
+    comm
+        strcmp (char*)&debug "./example" 9
+        if $equal
+            start_output
+                echo # -------------execve-------------\n
+                print (char*)&debug
+            stop_output
+        end
+        continue
+    end
+
+# -----------------------File System-----------------------
+
+break fs/read_write.c:89
+    comm
+        strcmp (char*)&debug $str 12
+        if $equal
+            start_output
+                echo # -------------sys_write-------------\n
+                echo current->tty:
+                print current->tty
+                echo char_dev inode:
+                print current->filp[fd]->f_inode->i_num
+            stop_output
+        end
+        continue
+    end
+
+# -----------------------Char Drive Interface-----------------------
+
+break fs/char_dev.c:99
+    comm
+        strcmp (char*)&debug $str 12
+        if $equal
+            start_output
+                echo # -------------rw_char-------------\n
+                echo current->tty:
+                print current->tty
+            stop_output
+        end
+        continue
+    end
+
+break fs/char_dev.c:rw_ttyx
+    comm
+        if $equal
+            start_output
+                echo # -------------rw_ttyx-------------\n
+            stop_output
+        end
+        continue
+    end
+
+
+# -----------------------Char Drive-----------------------
+
+
+break chr_drv/tty_io.c:298
+    comm
+        strcmp (char*)&debug $str 12
+        if $equal
+            start_output
+                echo # -------------tty_write-------------\n
+                echo channel:
+                print channel
+                i r fs
+            stop_output
+        end
+        continue
+    end
+
+break chr_drv/tty_io.c:135
+    comm
+
+        strcmp (char*)&buf $str 12
+        if $equal
+            start_output
+                echo # -------------buf size > 1024, sleep-------------\n
+                print buf
+            stop_output
+        end
+        continue
+    end
+
+break chr_drv/console.c:452
+    comm
+        strcmp (char*)&buf $str 12
+        if $equal
+            start_output
+                echo # -------------con_write-------------\n
+                print buf
+                x /1xh 0x90006
+            stop_output
+        end
+        continue
+    end

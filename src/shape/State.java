@@ -1,4 +1,4 @@
-package Shape;
+package shape;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;

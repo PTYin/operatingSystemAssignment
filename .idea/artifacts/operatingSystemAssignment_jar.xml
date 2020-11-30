@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="operatingSystemAssignment:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/operatingSystemAssignment_jar</output-path>
+    <root id="archive" name="operatingSystemAssignment.jar">
+      <element id="module-output" name="operatingSystemAssignment" />
+    </root>
+  </artifact>
+</component>

@@ -1,22 +1,15 @@
 package main;
 
-import Shape.Arrow;
-import Shape.Queue;
-import Shape.State;
+import shape.Arrow;
+import shape.Queue;
+import shape.State;
 import com.sun.istack.internal.Nullable;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
